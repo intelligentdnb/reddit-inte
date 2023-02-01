@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase for Server Side Rendering (SSR) 1:29:00 video
-const app = !!getApps().length ? initializeApp(firebaseConfig) : getApp(); // 
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp(); // 
 const firestore = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
