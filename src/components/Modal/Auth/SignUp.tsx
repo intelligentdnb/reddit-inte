@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from '@/src/firebase/clientApp';
+import { FIREBASE_ERRORS } from '@/src/firebase/errors';
 
 const SignUp: React.FC = () => {
     const setAuthModalState = useSetRecoilState(AuthModalState);
@@ -22,7 +23,7 @@ const SignUp: React.FC = () => {
         if (error) setError("");
         if (signUpForm.password !== signUpForm.confirmPassword) {
             // set error
-            setError("passwords do not match ..");
+            setError("Passwords do not match");
             return
         }
         // passwords match
@@ -50,10 +51,9 @@ const SignUp: React.FC = () => {
                 _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500", }}
                 _focus={{ outline: "none", bg: "white", border: "1px solid", borderColor: "blue.500", }}
                 required name='confirmPassword' placeholder='confirm password' type="password" mb={2} onChange={onChange} />
-            {error && (
                 <Text textAlign="center" color="red" fontSize="10pt">
-                    {error}
-                </Text>)}
+                    {error || FIREBASE_ERRORS[userError?.message as keyof typeof FIREBASE_ERRORS]}
+                </Text>
             <Button type='submit' width="100%" height="36px" mt={2} mb={2} isLoading={loading}>Sign Up</Button>
             <Flex fontSize="9pt" justifyContent="center">
                 <Text mr={1}>Already a readditor?</Text>
