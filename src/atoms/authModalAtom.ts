@@ -7,12 +7,14 @@ RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false;
     view: "login" | "signup" | "resetPassword";
  };
 
+ export type ModalView = "login" | "signup" | "resetPassword";
+
  const defaultModalState: AuthModalState = {
     open: false,
     view: "login",
  };
 
- export const AuthModalState = atom<AuthModalState>({
+ export const authModalState = atom<AuthModalState>({
     key: "authModalState",
     default: defaultModalState,
  });
