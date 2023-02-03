@@ -1,14 +1,15 @@
-import { AuthModalState } from '@/src/atoms/authModalAtom';
+import { authModalState, ModalView } from '@/src/atoms/authModalAtom';
 import { auth } from '@/src/firebase/clientApp';
-import { useDisclosure, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Flex, Text } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Flex, Text } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRecoilState } from 'recoil';
 import AuthInputs from './AuthInputs';
 import OAuthButtons from './OAuthButtons';
+import ResetPassword from './ResetPassword';
 
 const AuthModal: React.FC = () => {
-    const [modalState, setModalState] = useRecoilState(AuthModalState);
+    const [modalState, setModalState] = useRecoilState(authModalState);
     const [user, loading, error] = useAuthState(auth);
 
     const handleClose = () => {
@@ -35,10 +36,15 @@ const AuthModal: React.FC = () => {
                     <ModalCloseButton />
                     <ModalBody display="flex" flexDirection="column" alignItems="center" justifyContent="center" pb={6}>
                         <Flex direction="column" align="center" justify="center" width="70%" >
-                            <OAuthButtons />
-                            <Text color="gray.500" fontWeight={700} marginBottom={3}>or</Text>
-                            <AuthInputs />
-                            {/* <ResetPassword /> */}
+                            {modalState.view === "login" || modalState.view === "signup" ? (
+                                <>
+                                    <OAuthButtons />
+                                    <Text color="gray.500" fontWeight={700} marginBottom={3}>or</Text>
+                                    <AuthInputs />
+                                </>
+                            ): <ResetPassword toggleView={function (view: ModalView): void {
+                                    throw new Error('Function not implemented.');
+                                } }/>}
                         </Flex>
                     </ModalBody>
                 </ModalContent>
