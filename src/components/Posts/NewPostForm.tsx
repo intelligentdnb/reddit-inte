@@ -56,26 +56,15 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
 
     const [selectedFile, setSelectedFile] = useState<string>();
     const [loading, setLoading] = useState(false);
-    const [postID, setPostID] = useState("");
     const [error, setError] = useState(false);
 
-    function generateRandomID() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let randomID = '';
-        for (let i = 0; i < 15; i++) {
-          randomID += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return randomID;
-      }
+   
 
     const handleCreatePost = async () => {
         //  community
         const { communityId } = router.query;
-        // create the ID post
-        setPostID(generateRandomID);
         // create new post object => type Post
         const newPost: Post = {
-            id: user.uid + postID,
             communityId: communityId as string,
             creatorId: user.uid,
             creatorDisplayName: user.email!.split("@")[0],
@@ -102,15 +91,13 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
                     imageURL: downloadURL,
                 });
             };
+            // redirect the user back to the communityPage using the router 
+            router.back();
         } catch (error: any) {
             console.log("handleCreatePost error", error.message)
             setError(true);
         }
         setLoading(false);
-
-
-        // redirect the user back to the communityPage using the router
-        // router.back();
     };
 
     //UPLOAD IMAGE FROM PC TO POST
