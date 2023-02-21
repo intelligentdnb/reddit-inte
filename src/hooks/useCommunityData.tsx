@@ -15,8 +15,8 @@ const useCommunityData = () => {
 
     const onJoinOrLeaveCommunity = (communityData: Community, isJoined: boolean) => {
 
-        if(!user) {
-           setAuthModalState({ open: true, view: "login"});
+        if (!user) {
+            setAuthModalState({ open: true, view: "login" });
             return;
         };
 
@@ -84,7 +84,7 @@ const useCommunityData = () => {
         try {
             // batch write
             const batch = writeBatch(firestore);
-            
+
             // deleting a new community snippet 
             batch.delete(
                 doc(firestore, `users/${user?.uid}/communitySnippets`, communityId)
@@ -92,24 +92,30 @@ const useCommunityData = () => {
             // updating the numberOfMembers (-1)
             batch.update(
                 doc(firestore, "communities", communityId), {
-                    numberOfMembers: increment(-1)
-                });
+                numberOfMembers: increment(-1)
+            });
 
             await batch.commit();
             //update recoil state - communityState.mySnippets
             setCommunityStateValue(prev => ({
-                ...prev, 
+                ...prev,
                 mySnippets: [...prev.mySnippets.filter(item => item.communityId !== communityId)],
             }));
         } catch (error: any) {
-        console.log("leaveCommunity error", error.message);
-        setError(error.message);
+            console.log("leaveCommunity error", error.message);
+            setError(error.message);
         }
         setLoading(false);
     };
 
     useEffect(() => {
-        if (!user) return;
+        if (!user) {
+            setCommunityStateValue(prev => ({
+                ...prev,
+                mySnippets: [],
+            }));
+            return;
+        };
         getMySnippets();
     }, [user]);
 
