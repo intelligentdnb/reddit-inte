@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import { addDoc, collection, serverTimestamp, Timestamp, updateDoc } from 'firebase/firestore';
 import { firestore, storage } from '@/src/firebase/clientApp';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import useSelectFile from '@/src/hooks/useSelectFile';
 
 type NewPostFormProps = {
     user: User;
@@ -54,7 +55,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
         body: "",
     });
 
-    const [selectedFile, setSelectedFile] = useState<string>();
+   const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile()
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
@@ -100,21 +101,6 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
         setLoading(false);
     };
 
-    //UPLOAD IMAGE FROM PC TO POST
-    const onSelectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const reader = new FileReader(); // class provided by javaScript uses for file uploading or read data from files
-
-        if (event.target.files?.[0]) {
-            reader.readAsDataURL(event.target.files[0]);
-        };
-
-        reader.onload = (readerEvent) => {
-            if (readerEvent.target?.result) {
-                setSelectedFile(readerEvent.target.result as string);
-            };
-        };
-    };
-
     const onTextChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { target: { name, value }, } = event;
 
@@ -136,7 +122,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
                     <TextInputs textInputs={textInputs} handleCreatePost={handleCreatePost} onChange={onTextChange} loading={loading} />
                 )}
                 {selectedTab === "Images & Video" && (
-                    <ImageUpload selectedFile={selectedFile} onSelectImage={onSelectImage} setSelectedFile={setSelectedFile} setSelectedTab={setSelectedTab} />
+                    <ImageUpload selectedFile={selectedFile} onSelectImage={onSelectFile} setSelectedFile={setSelectedFile} setSelectedTab={setSelectedTab} />
                 )}
             </Flex>
             {error && (
