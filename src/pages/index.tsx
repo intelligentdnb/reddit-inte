@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Post, PostVote } from '../atoms/postsAtom';
 import CreatePostLink from '../components/Community/CreatePostLink';
+import PersonalHome from '../components/Community/PersonalHome';
+import Premium from '../components/Community/Premium';
+import Recommendations from '../components/Community/Recommendations';
 import PageContent from '../components/Layout/PageContent'
 import PostItem from '../components/Posts/PostItem';
 import PostLoader from '../components/Posts/PostLoader';
@@ -81,15 +84,15 @@ export default function Home() {
   // useEffects
 
   useEffect(() => {
-    if(communityStateValue.snippetsFetched) buildUserHomeFeed();
+    if (communityStateValue.snippetsFetched) buildUserHomeFeed();
   }, [communityStateValue.snippetsFetched]);
 
   useEffect(() => {
-    if(!user && !loadingUser) buildNoUserHomeFeed();
+    if (!user && !loadingUser) buildNoUserHomeFeed();
   }, [user, loadingUser]);
 
   useEffect(() => {
-    if(user && postStateValue.posts.length) getUserPostVotes();
+    if (user && postStateValue.posts.length) getUserPostVotes();
     return () => { //clean up function
       setPostStateValue(prev => ({
         ...prev,
@@ -101,20 +104,24 @@ export default function Home() {
   return (
     <PageContent>
       <>
-      <CreatePostLink />
+        <CreatePostLink />
         {loading ? (
           <PostLoader />
         ) : (
           <Stack>
             {postStateValue.posts.map(post => (
               <PostItem key={post.id} post={post} onDeletePost={onDeletePost} onVote={onVote} onSelectPost={onSelectPost} homePage
-              userVoteValue={postStateValue.postVotes.find(item => item.postId === post.id)?.voteValue} userIsCreator={user?.uid === post.creatorId} />
+                userVoteValue={postStateValue.postVotes.find(item => item.postId === post.id)?.voteValue} userIsCreator={user?.uid === post.creatorId} />
             ))}
           </Stack>
         )}
       </>
       <>
-
+        <Stack spacing={5}>
+          <Recommendations />
+          <Premium />
+          <PersonalHome />
+        </Stack>
       </>
     </PageContent>
   )
